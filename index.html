@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator with History Feature</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <div class="display">
+            <input id="screen" type="text" placeholder="0">
+        </div>
+
+        <div class="btns">
+            <div class="row">
+                <button id="ce" onclick="backspc()">CE</button>
+                <button onclick="fact()">x!</button>
+                <button class="btn">(</button>
+                <button class="btn">)</button>
+                <button class="btn">%</button>
+                <button id="ac" onclick="screen.value=''">AC</button>
+            </div>
+
+            <div class="row">
+                <button onclick="sin()">sin</button>
+                <button onclick="sqrt()">&radic;</button>
+                <button onclick="log()">log</button>
+                <button onclick="ln()">ln</button>
+                <button onclick="power()">x<sup>y</sup></button>
+                <button class="btn">7</button>
+                <button class="btn">8</button>
+                <button class="btn">9</button>
+                <button class="btn">/</button>
+            </div>
+
+            <div class="row">
+                <button onclick="cos()">cos</button>
+                <button onclick="cubert()">&#8731;</button>
+                <button onclick="exp()">exp</button>
+                <button onclick="mean()">mean</button>
+                <button class="btn">4</button>
+                <button class="btn">5</button>
+                <button class="btn">6</button>
+                <button class="btn">*</button>
+            </div>
+
+            <div class="row">
+                <button onclick="tan()">tan</button>
+                <button onclick="square()">x<sup>2</sup></button>
+                <button onclick="median()">median</button>
+                <button class="btn">1</button>
+                <button class="btn">2</button>
+                <button class="btn">3</button>
+                <button class="btn">-</button>
+            </div>
+
+            <div class="row">
+                <button onclick="pi()">π</button>
+                <button onclick="cube()">x<sup>3</sup></button>
+                <button class="btn">0</button>
+                <button class="btn">.</button>
+                <button id="eval" onclick="calculate()">=</button>
+                <button class="btn">+</button>
+            </div>
+        </div>
+    </div>
+    <div id="history">
+        <h1><center>History</center></h1>
+    </div>
+    <script type="text/javascript">
+      
+        var screen = document.querySelector('#screen');
+        var btn = document.querySelectorAll('.btn');
+        let history = document.getElementById('history');
+        let historyArray = [];
+
+       
+        function updateHistory(calculation) {
+          
+            historyArray.unshift(calculation);
+           
+            if (historyArray.length > 50) {
+                historyArray.pop();
+            }
+          
+            history.innerHTML = '<h1><center>History</center></h1>';
+            historyArray.forEach(entry => {
+                let para = document.createElement('p');
+                para.innerText = entry;
+                history.appendChild(para);
+            });
+        }
+
+       
+        function calculate() {
+            let result;
+            try {
+                result = eval(screen.value);
+                let calculation = screen.value + " = " + result;
+                updateHistory(calculation);
+                screen.value = result;
+            } catch (e) {
+                alert('Invalid expression');
+            }
+        }
+
+       
+        for (item of btn) {
+            item.addEventListener('click', (e) => {
+                let btntext = e.target.innerText;
+                screen.value += btntext;
+            });
+        }
+
+        
+        function sin() {
+            let value = Math.sin(screen.value);
+            screen.value = value < 0 ? 0 : value;
+        }
+
+        function cos() {
+            let value = Math.cos(screen.value);
+            screen.value = value < 0 ? 0 : value;
+        }
+
+        function tan() {
+            let value = Math.tan(screen.value);
+            screen.value = value < 0 ? 0 : value;
+        }
+
+        function square() {
+            screen.value = Math.pow(screen.value, 2);
+        }
+
+        function cube() {
+            screen.value = Math.pow(screen.value, 3);
+        }
+
+        function sqrt() {
+            screen.value = Math.sqrt(screen.value);
+        }
+
+        function cubert() {
+            screen.value = Math.cbrt(screen.value);
+        }
+
+        function pi() {
+            screen.value = 3.14159265359;
+        }
+
+        function log() {
+            screen.value = Math.log10(screen.value);
+        }
+
+        function ln() {
+            screen.value = Math.log(screen.value);
+        }
+
+        function exp() {
+            screen.value = Math.exp(screen.value);
+        }
+
+        function mean() {
+            let values = screen.value.split(',').map(Number);
+            let sum = values.reduce((a, b) => a + b, 0);
+            let mean = sum / values.length;
+            screen.value = mean;
+        }
+
+        function median() {
+            let values = screen.value.split(',').map(Number).sort((a, b) => a - b);
+            let mid = Math.floor(values.length / 2);
+            let median = values.length % 2 === 0 ? (values[mid - 1] + values[mid]) / 2 : values[mid];
+            screen.value = median;
+        }
+
+        function power() {
+            let expression = screen.value.split('^');
+            if (expression.length === 2) {
+                let base = parseFloat(expression[0]);
+                let exponent = parseFloat(expression[1]);
+                screen.value = Math.pow(base, exponent);
+            } else {
+                alert('Invalid power format. Use base^exponent');
+            }
+        }
+
+        
+        function fact() {
+            let num = parseInt(screen.value);
+            let f = 1;
+            for (let i = 1; i <= num; i++) {
+                f *= i;
+            }
+            screen.value = f;
+        }
+
+        
+        function backspc() {
+            screen.value = screen.value.slice(0, -1);
+        }
+    </script>
+</body>
+</html>
+
